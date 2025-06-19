@@ -1,29 +1,16 @@
-# Utilise l'image officielle PHP avec Apache
 FROM php:8.2-apache
 
-# Installer les extensions nécessaires
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql
-
-# Copier les fichiers du projet dans le dossier public du serveur web
+# Copie les fichiers dans le répertoire de l'image
 COPY public/ /var/www/html/
 
-# Donner les bons droits
-RUN chown -R www-data:www-data /var/www/html
-
-# Copier tous les autres fichiers (config.php, includes/, etc.)
-COPY config.php /var/www/config.php
-
-# Activer mod_rewrite si besoin
+# Active le module rewrite d'Apache (souvent utile avec PHP)
 RUN a2enmod rewrite
 
-# Copier un fichier de configuration Apache custom (optionnel)
-# COPY apache.conf /etc/apache2/sites-enabled/000-default.conf
+# Copie un fichier de configuration personnalisé si nécessaire
+# COPY config.php /var/www/html/config.php  # Déjà dans le dossier public, donc normalement pas nécessaire
 
-# Exposer le port par défaut d’Apache
+# Donne les bons droits (facultatif selon ton besoin)
+RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
+
+# Expose le port 80 pour accéder à l'appli
 EXPOSE 80
-
-# Lancer Apache
-CMD ["apache2-foreground"]
-
