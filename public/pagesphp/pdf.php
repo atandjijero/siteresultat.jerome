@@ -1,22 +1,22 @@
 <?php
-ob_start(); // Démarrer la temporisation de sortie
+ob_start();
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+ini_set('error_log', 'erreurs_pdf.log');
 
 require('fpdf.php');
-include("config.php"); // Connexion à la base PostgreSQL
+include("config.php");
 
 $matricule = htmlspecialchars($_GET['matricule'] ?? '');
 $filiere_id = intval($_GET['filiere_id'] ?? 0);
 
-// Vérifier l'existence de l'étudiant
+// Vérification étudiant
 $query = "SELECT e.matricule, e.nom, f.nom_filiere
           FROM etudiants e
           JOIN filieres f ON e.filiere_id = f.id
           WHERE e.matricule = :matricule AND f.id = :filiere_id";
 $stmt = $pdo->prepare($query);
-$stmt->execute([
-    ':matricule' => $matricule,
-    ':filiere_id' => $filiere_id
-]);
+$stmt->execute([':matricule' => $matricule, ':filiere_id' => $filiere_id]);
 $etudiant = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$etudiant) {
@@ -24,58 +24,63 @@ if (!$etudiant) {
     die("Erreur : Étudiant non trouvé.");
 }
 
-$nom = $etudiant['nom'];
-$filiere = $etudiant['nom_filiere'];
+$nom = mb_convert_encoding($etudiant['nom'], 'ISO-8859-1', 'UTF-8');
+$filiere = mb_convert_encoding($etudiant['nom_filiere'], 'ISO-8859-1', 'UTF-8');
 
 // Récupération des notes
-$sql_notes = "SELECT m.nom_matiere, n.note_devoir, n.note_examen, n.moyenne, n.valide 
-              FROM notes n 
-              JOIN matieres m ON n.matiere_id = m.id 
-              WHERE n.etudiant_id = :matricule";
-$req = $pdo->prepare($sql_notes);
+$sql = "SELECT m.nom_matiere, n.note_devoir, n.note_examen, n.moyenne, n.valide 
+        FROM notes n 
+        JOIN matieres m ON n.matiere_id = m.id 
+        WHERE n.etudiant_id = :matricule";
+$req = $pdo->prepare($sql);
 $req->execute([':matricule' => $matricule]);
 $notes = $req->fetchAll(PDO::FETCH_ASSOC);
 
-// Création du PDF
+// Génération PDF
 $pdf = new FPDF();
 $pdf->AddPage();
 $pdf->SetFont('Arial', 'B', 14);
 $pdf->SetTextColor(0, 51, 102);
 $pdf->SetFillColor(220, 220, 220);
-$pdf->Cell(190, 10, "Résultats de $nom ($matricule)", 0, 1, 'C', true);
-$pdf->Cell(190, 10, "Filière : $filiere", 0, 1, 'C', true);
+$pdf->Cell(190, 10, mb_convert_encoding("Résultats de $nom ($matricule)", 'ISO-8859-1', 'UTF-8'), 0, 1, 'C', true);
+$pdf->Cell(190, 10, mb_convert_encoding("Filière : $filiere", 'ISO-8859-1', 'UTF-8'), 0, 1, 'C', true);
 $pdf->Ln(10);
 
-// En-têtes tableau
+// En-têtes
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->SetFillColor(0, 51, 102);
 $pdf->SetTextColor(255);
-$headers = ["Matière", "Devoir", "Examen", "Moyenne", "Validé"];
+$headers = ['Matière', 'Devoir', 'Examen', 'Moyenne', 'Validé'];
 $widths = [50, 30, 30, 30, 30];
 foreach ($headers as $i => $h) {
-    $pdf->Cell($widths[$i], 10, $h, 1, 0, 'C', true);
+    $pdf->Cell($widths[$i], 10, mb_convert_encoding($h, 'ISO-8859-1', 'UTF-8'), 1, 0, 'C', true);
 }
 $pdf->Ln();
 
-// Contenu des notes
+// Lignes
 $pdf->SetFont('Arial', '', 12);
 $pdf->SetTextColor(0);
-$moyenne_generale = 0;
 $total = count($notes);
+$moyenne_generale = 0;
 
 foreach ($notes as $n) {
+    $matiere = mb_convert_encoding($n['nom_matiere'], 'ISO-8859-1', 'UTF-8');
+    $devoir = $n['note_devoir'];
+    $examen = $n['note_examen'];
+    $moyenne = $n['moyenne'];
     $valide = ($n['valide'] === 't' || $n['valide'] === true) ? "Oui" : "Non";
-    $pdf->SetFillColor(245, 245, 245);
-    $pdf->Cell(50, 10, $n['nom_matiere'], 1, 0, 'C', true);
-    $pdf->Cell(30, 10, $n['note_devoir'], 1, 0, 'C', true);
-    $pdf->Cell(30, 10, $n['note_examen'], 1, 0, 'C', true);
-    $pdf->Cell(30, 10, $n['moyenne'], 1, 0, 'C', true);
-    $pdf->Cell(30, 10, $valide, 1, 1, 'C', true);
 
-    $moyenne_generale += floatval($n['moyenne']);
+    $pdf->SetFillColor(245, 245, 245);
+    $pdf->Cell(50, 10, $matiere, 1, 0, 'C', true);
+    $pdf->Cell(30, 10, $devoir, 1, 0, 'C', true);
+    $pdf->Cell(30, 10, $examen, 1, 0, 'C', true);
+    $pdf->Cell(30, 10, $moyenne, 1, 0, 'C', true);
+    $pdf->Cell(30, 10, mb_convert_encoding($valide, 'ISO-8859-1', 'UTF-8'), 1, 1, 'C', true);
+
+    $moyenne_generale += floatval($moyenne);
 }
 
-// Moyenne générale
+// Résumé
 $moyenne = ($total > 0) ? round($moyenne_generale / $total, 2) : 0;
 $mention = "Insuffisant";
 if ($moyenne >= 16) $mention = "Très Bien";
@@ -83,16 +88,17 @@ elseif ($moyenne >= 14) $mention = "Bien";
 elseif ($moyenne >= 12) $mention = "Assez Bien";
 elseif ($moyenne >= 10) $mention = "Passable";
 
-// Résumé
 $pdf->Ln(10);
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->SetTextColor(0, 51, 102);
-$pdf->Cell(190, 10, "📊 Moyenne Générale : $moyenne", 0, 1, 'C', true);
-$pdf->Cell(190, 10, "🏅 Mention : $mention", 0, 1, 'C', true);
+$pdf->Cell(190, 10, mb_convert_encoding("📊 Moyenne Générale : $moyenne", 'ISO-8859-1', 'UTF-8'), 0, 1, 'C', true);
+$pdf->Cell(190, 10, mb_convert_encoding("🏅 Mention : $mention", 'ISO-8859-1', 'UTF-8'), 0, 1, 'C', true);
+
+// Footer
 $pdf->Ln(10);
 $pdf->SetTextColor(100);
-$pdf->Cell(190, 10, "🔹 Généré automatiquement par le système 🔹", 0, 1, 'C');
+$pdf->Cell(190, 10, mb_convert_encoding("🔹 Généré automatiquement par le système 🔹", 'ISO-8859-1', 'UTF-8'), 0, 1, 'C');
 
 ob_end_clean();
-$pdf->Output('D', "resultat_$matricule.pdf")
+$pdf->Output('D', "resultat_$matricule.pdf");
 ?>
