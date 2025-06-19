@@ -13,7 +13,6 @@ COPY public/ /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
 
 # Copier tous les autres fichiers (config.php, includes/, etc.)
-COPY includes/ /var/www/includes/
 COPY config.php /var/www/config.php
 
 # Activer mod_rewrite si besoin
