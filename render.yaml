@@ -1,0 +1,85 @@
+Très bien 👍 Tu veux un fichier Dockerfile et un fichier render.yaml pour déployer ton site PHP avec PostgreSQL, JS, HTML, Bootstrap sur Render.com.
+
+⚠ IMPORTANT :
+
+Render n’a pas besoin d’un Dockerfile si tu utilises l'environnement "PHP" standard.
+Mais si tu préfères contrôler l’environnement PHP (ex : installer des extensions PHP ou personnaliser Apache), alors tu peux utiliser un Dockerfile personnalisé.
+
+
+---
+
+✅ 1. Dockerfile pour ton application PHP
+
+Ce fichier crée un environnement complet PHP + Apache, avec PostgreSQL supporté (via PDO).
+
+# Utilise l'image officielle PHP avec Apache
+FROM php:8.2-apache
+
+# Installer les extensions nécessaires
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql
+
+# Copier les fichiers du projet dans le dossier public du serveur web
+COPY public/ /var/www/html/
+
+# Donner les bons droits
+RUN chown -R www-data:www-data /var/www/html
+
+# Copier tous les autres fichiers (config.php, includes/, etc.)
+COPY includes/ /var/www/includes/
+COPY config.php /var/www/config.php
+
+# Activer mod_rewrite si besoin
+RUN a2enmod rewrite
+
+# Copier un fichier de configuration Apache custom (optionnel)
+# COPY apache.conf /etc/apache2/sites-enabled/000-default.conf
+
+# Exposer le port par défaut d’Apache
+EXPOSE 80
+
+# Lancer Apache
+CMD ["apache2-foreground"]
+
+
+---
+
+✅ 2. render.yaml pour configurer Render
+
+Ce fichier dit à Render de construire un container Docker personnalisé et de lier la base PostgreSQL automatiquement.
+
+services:
+  - type: web
+    name: mon-app-php
+    env: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: mon-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: mon-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: mon-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: mon-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: mon-db
+          property: password
+
+databases:
+  - name: mon-db
+    plan: free
+
