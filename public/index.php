@@ -1,6 +1,5 @@
 <?php
 include 'config.php';
-include "pagesphp/tonfichier.php";
 ?>
 <!DOCTYPE html>
 <html lang="fr">
