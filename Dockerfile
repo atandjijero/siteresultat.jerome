@@ -1,20 +1,24 @@
+# Image de base avec Apache et PHP 8.2
 FROM php:8.2-apache
 
-# Installe les extensions nécessaires pour PostgreSQL
-RUN apt-get update && apt-get install -y libpq-dev \
+# Installation des extensions nécessaires à PostgreSQL
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
     && docker-php-ext-install pdo pdo_pgsql
 
-# Active le module mod_rewrite (utile avec .htaccess)
+# Activation du module Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Définis la variable d'environnement PORT pour Render
-ENV PORT=80
+# Configuration par défaut du port utilisé par Render
+ENV PORT 80
 
-# Copie tes fichiers dans le dossier web d'Apache
+# Copie du code de l'application dans le répertoire web d'Apache
 COPY public/ /var/www/html/
+COPY public/font/ /var/www/html/font/
 
-# Fixe les permissions (facultatif mais recommandé)
-RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
+# Autorisations sur les fichiers (recommandé pour éviter les erreurs)
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html
 
-# Expose le port 80 (Apache)
+# Exposition du port (utile en local ou pour documentation)
 EXPOSE 80
