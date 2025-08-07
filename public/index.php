@@ -39,6 +39,10 @@ include 'config.php';
             background: #005b96;
             color: white;
         }
+        a.email-link {
+            color: #ffd700;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -47,6 +51,13 @@ include 'config.php';
         <div class="floating-box text-center">
             <h1>🎓 Consultation des Résultats</h1>
             <p>Bienvenue sur la plateforme officielle de consultation des résultats académiques. Accédez rapidement et en toute sécurité aux performances des étudiants.</p>
+            
+            <!-- Ajout de l'adresse email -->
+            <p class="mt-3">
+                📬 Pour toute question, contactez-nous à 
+                <a href="mailto:atandjijero@gmail.com" class="email-link">EMAIL</a>
+            </p>
+
             <div class="mt-4">
                 <a href="resultat.html" class="btn btn-custom">📖 Consulter les Résultats</a>
                 <a href="login.html" class="btn btn-custom">🔑 Espace Admin</a>
