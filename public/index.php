@@ -58,6 +58,12 @@
             width: 60px;
             margin-bottom: 20px;
         }
+        .custom-image {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 <body>
@@ -66,6 +72,8 @@
 
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="floating-box text-center">
+            <img src="image/imgs.jpeg" alt="Des étudiants souriants célèbrent leur réussite dans une atmosphère positive et conviviale." class="custom-image">
+
             <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png" alt="Graduation Icon" class="icon">
             <h1>🎓 Consultation des Résultats</h1>
             <p>Bienvenue sur la plateforme officielle de consultation des résultats académiques. Accédez rapidement et en toute sécurité aux performances des étudiants.</p>
