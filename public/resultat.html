@@ -83,17 +83,44 @@
         </div>
         <div class="mb-3">
             <label for="filiere" class="form-label">Filière :</label>
-            <select name="filiere" id="filiere" class="form-select" required>
+            <select name="filiere_id" id="filiere" class="form-select" required>
                 <option value="">Sélectionnez votre filière</option>
-                <option value="informatique">Informatique</option>
-                <option value="gestion">Gestion</option>
-                <option value="comptabilité">Comptabilité</option>
-                <!-- Ajoute d'autres options ici -->
+                <option value="2">Génie Logiciel</option>
+                <option value="3">Informatique</option>
+                <option value="4">Réseaux</option>
+                <option value="5">Génie Civil</option>
+                <option value="6">Comptabilité</option>
             </select>
         </div>
         <button type="submit" class="btn btn-primary w-100">Voir Résultats</button>
     </form>
 </div>
+
+<!-- Boîte de dialogue pour les erreurs -->
+<div id="errorModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Erreur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let error = new URLSearchParams(window.location.search).get('error');
+        if (error) {
+            document.getElementById('errorMessage').textContent = error;
+            new bootstrap.Modal(document.getElementById('errorModal')).show();
+        }
+    });
+</script>
 
 </body>
 </html>
