@@ -1,91 +1,76 @@
-<?php include 'config.php'; ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Consultation des Résultats</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Résultats</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         body {
-            background: linear-gradient(to right, #002b5e, #005b96);
-            color: white;
-            font-family: 'Poppins', sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
         }
-        .banner {
+
+        .form-container {
             width: 100%;
-            height: 250px;
-            background-image: url('https://www.boldbi.com/resources/blog/educational-insights-analyzing-student-performance-with-bi-dashboards/images/student-performance-dashboard.png');
-            background-size: cover;
-            background-position: center;
-            border-bottom: 5px solid #ffd700;
+            max-width: 600px;
+            padding: 40px;
+            background-color: #fefefe;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
-        .floating-box {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 50px;
-            border-radius: 15px;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease-in-out;
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #007bff;
         }
-        .floating-box:hover {
-            transform: translateY(-10px);
-        }
-        .btn-custom {
-            background: white;
-            color: #002b5e;
+
+        .btn-primary {
+            background-color: #007bff;
             border: none;
-            padding: 14px 30px;
-            font-size: 20px;
-            margin: 15px;
-            border-radius: 8px;
+            font-size: 18px;
+            padding: 12px;
             transition: 0.3s;
         }
-        .btn-custom:hover {
-            background: #ffd700;
-            color: #002b5e;
+
+        .btn-primary:hover {
+            background-color: #ffffff;
+            color: #007bff;
+            border: 1px solid #007bff;
         }
-        a.email-link {
-            color: #ffd700;
-            text-decoration: underline;
-        }
-        .testimonial {
-            font-style: italic;
-            margin-top: 30px;
-            color: #e0e0e0;
-        }
-        .icon {
-            width: 60px;
-            margin-bottom: 20px;
+
+        label {
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
 
-    <div class="banner"></div>
-
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="floating-box text-center">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png" alt="Graduation Icon" class="icon">
-            <h1>🎓 Consultation des Résultats</h1>
-            <p>Bienvenue sur la plateforme officielle de consultation des résultats académiques. Accédez rapidement et en toute sécurité aux performances des étudiants.</p>
-            
-            <p class="mt-3">
-                📬 Pour toute question, contactez-nous par 
-                <a href="mailto:atandjijero@gmail.com" class="email-link">email</a>
-            </p>
-
-            <div class="mt-4">
-                <a href="resultat.html" class="btn btn-custom">📖 Consulter les Résultats</a>
-                <a href="login.html" class="btn btn-custom">🔑 Espace Admin</a>
-            </div>
-
-            <div class="testimonial">
-                « Le savoir est la clé du succès. Consultez vos résultats et préparez votre avenir dès aujourd'hui. »
-            </div>
+<div class="form-container">
+    <h2>🎓 Consulter Mes Résultats</h2>
+    <form action="resultat.php" method="POST">
+        <div class="mb-3">
+            <label for="matricule" class="form-label">Matricule :</label>
+            <input type="text" name="matricule" id="matricule" class="form-control" required>
         </div>
-    </div>
+        <div class="mb-3">
+            <label for="filiere" class="form-label">Filière :</label>
+            <select name="filiere" id="filiere" class="form-select" required>
+                <option value="">Sélectionnez votre filière</option>
+                <option value="informatique">Informatique</option>
+                <option value="gestion">Gestion</option>
+                <option value="comptabilité">Comptabilité</option>
+                <!-- Ajoute d'autres options ici -->
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Voir Résultats</button>
+    </form>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
