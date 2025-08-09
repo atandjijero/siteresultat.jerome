@@ -66,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <button type="submit" name="action" value="note" class="btn btn-warning">Ajouter Note</button>
                     </div>
                 </form>
+                <a href="admi_espace.html" class="btn btn-outline-dark mt-3">⬅ Retour à l'espace admin</a>
             </div>
         </div>
     </div>
