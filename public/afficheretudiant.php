@@ -25,7 +25,7 @@
                             FROM etudiants e
                             LEFT JOIN filieres f ON e.filiere_id = f.id";
 
-                    foreach ($conn->query($sql) as $row) {
+                    foreach ($pdo->query($sql) as $row) {
                         echo "<tr>
                                 <td>{$row['matricule']}</td>
                                 <td>{$row['nom']}</td>
