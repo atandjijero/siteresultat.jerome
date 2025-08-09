@@ -21,4 +21,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<div class='alert alert-danger'>Erreur : une erreur s'est produite.</div>";
     }
 }
-?
+?>
