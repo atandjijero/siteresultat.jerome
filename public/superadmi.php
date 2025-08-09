@@ -2,7 +2,8 @@
 session_start();
 require_once 'config.php';
 
-$action = $_GET['action'] ?? 'etudiant';
+$action = $_POST['action'] ?? 'etudiant';
+$erreur = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nom = $_POST['nom'] ?? '';
@@ -17,16 +18,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         switch ($action) {
             case 'etudiant':
-                header("Location:etudiant.html");
+                header("Location: etudiant.html");
                 break;
             case 'filiere':
-                header("Location:filiere.html");
+                header("Location: filiere.html");
                 break;
             case 'matiere':
-                header("Location:matiere.html");
+                header("Location: matiere.html");
                 break;
             case 'note':
-                header("Location:note.html");
+                header("Location: note.html");
                 break;
             default:
                 header("Location: admi_espace.html");
@@ -38,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!-- HTML -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -59,7 +59,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="nom" class="form-label">Nom d'utilisateur</label>
                         <input type="text" name="nom" id="nom" class="form-control" required>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Confirmer</button>
+                    <div class="d-grid gap-2">
+                        <button type="submit" name="action" value="etudiant" class="btn btn-primary">Ajouter Étudiant</button>
+                        <button type="submit" name="action" value="filiere" class="btn btn-secondary">Ajouter Filière</button>
+                        <button type="submit" name="action" value="matiere" class="btn btn-success">Ajouter Matière</button>
+                        <button type="submit" name="action" value="note" class="btn btn-warning">Ajouter Note</button>
+                    </div>
                 </form>
             </div>
         </div>
