@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Liste des Étudiants</title>
-    <!-- Intégration de Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -20,15 +19,23 @@
                 </thead>
                 <tbody>
                     <?php
-                    include 'config.php';
-                    $sql = "SELECT e.matricule, e.nom, f.nom_filiere FROM etudiants e
-                    LEFT JOIN filieres f ON e.filiere_id = f.id";
-                    foreach ($pdo->query($sql) as $row) {
-                        echo "<tr>
-                                <td>{$row['matricule']}</td>
-                                <td>{$row['nom']}</td>
-                                <td>{$row['nom_filiere']}</td>
-                              </tr>";
+                    require_once 'config.php'; 
+
+                    try {
+                        $sql = "SELECT e.matricule, e.nom, f.nom_filiere 
+                                FROM etudiants e
+                                LEFT JOIN filieres f ON e.filiere_id = f.id";
+                        $stmt = $pdo->query($sql);
+
+                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                            echo "<tr>
+                                    <td>" . htmlspecialchars($row['matricule']) . "</td>
+                                    <td>" . htmlspecialchars($row['nom']) . "</td>
+                                    <td>" . htmlspecialchars($row['nom_filiere'] ?? 'Non renseignée') . "</td>
+                                  </tr>";
+                        }
+                    } catch (PDOException $e) {
+                        echo "<tr><td colspan='3' class='text-danger'>Erreur : " . htmlspecialchars($e->getMessage()) . "</td></tr>";
                     }
                     ?>
                 </tbody>
@@ -36,7 +43,6 @@
         </div>
     </div>
 
-    <!-- Script Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
