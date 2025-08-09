@@ -27,7 +27,7 @@
                         echo "<tr>
                                 <td>{$row['matricule']}</td>
                                 <td>{$row['nom']}</td>
-                                <td>{$row['filiere']}</td>
+                                <td>{$row['nom_filiere']}</td>
                               </tr>";
                     }
                     ?>
