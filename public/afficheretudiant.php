@@ -21,10 +21,8 @@
                 <tbody>
                     <?php
                     include 'config.php';
-                    $sql = "SELECT e.matricule, e.nom, f.nom AS filiere
-                            FROM etudiants e
-                            LEFT JOIN filieres f ON e.filiere_id = f.id";
-
+                    $sql = "SELECT e.matricule, e.nom, f.libelle AS filier FROM etudiants e
+                    LEFT JOIN filieres f ON e.filiere_id = f.id";
                     foreach ($pdo->query($sql) as $row) {
                         echo "<tr>
                                 <td>{$row['matricule']}</td>
